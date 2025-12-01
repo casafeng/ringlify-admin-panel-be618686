@@ -25,6 +25,7 @@ import { SettingsPage } from "@/pages/business/SettingsPage";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 import NotFound from "./pages/NotFound";
+import HomePage from "./pages/landing/HomePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,8 +43,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* Redirect root to admin dashboard */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          {/* Landing Page */}
+          <Route path="/" element={<HomePage />} />
           
           {/* Admin Dashboard routes */}
           <Route path="/dashboard" element={<DashboardLayout />}>
