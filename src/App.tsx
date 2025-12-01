@@ -15,6 +15,8 @@ import { BusinessDetailPage } from "@/pages/dashboard/BusinessDetailPage";
 // Business Dashboard
 import { BusinessLayout } from "@/components/layout/BusinessLayout";
 import { LoginPage } from "@/pages/business/LoginPage";
+import { SignupPage } from "@/pages/business/SignupPage";
+import { OnboardingPage } from "@/pages/business/OnboardingPage";
 import { BusinessHome } from "@/pages/business/BusinessHome";
 import { BusinessCallLogsPage } from "@/pages/business/BusinessCallLogsPage";
 import { BusinessAppointmentsPage } from "@/pages/business/BusinessAppointmentsPage";
@@ -54,6 +56,8 @@ const App = () => (
 
           {/* Business Dashboard routes */}
           <Route path="/business/login" element={<LoginPage />} />
+          <Route path="/business/signup" element={<SignupPage />} />
+          <Route path="/business/setup" element={<OnboardingPage />} />
           <Route
             path="/business"
             element={

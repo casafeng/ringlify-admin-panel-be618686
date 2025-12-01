@@ -127,11 +127,19 @@ class BusinessApiClient {
     return response.json();
   }
 
-  // Authentication
+// Authentication
   async login(email: string, password: string): Promise<LoginResponse> {
     return this.request('/auth/business/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
+    });
+  }
+
+  // Signup
+  async signup(name: string, email: string, password: string): Promise<LoginResponse> {
+    return this.request('/auth/business/signup', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password }),
     });
   }
 
