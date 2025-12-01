@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Building2, Mail, Lock, Eye, EyeOff, AlertCircle, User } from 'lucide-react';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,21 +11,21 @@ import { businessApi } from '@/lib/business-api';
 import { setStoredAuth } from '@/lib/auth';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
-const loginSchema = z.object({
+const signupSchema = z.object({
+  name: z.string().min(2, 'Business name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-export function LoginPage() {
+export function SignupPage() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/business';
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
+  const [fieldErrors, setFieldErrors] = useState<{ name?: string; email?: string; password?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,10 +34,11 @@ export function LoginPage() {
     setFieldErrors({});
 
     // Validate form
-    const result = loginSchema.safeParse({ email, password });
+    const result = signupSchema.safeParse({ name, email, password });
     if (!result.success) {
-      const errors: { email?: string; password?: string } = {};
+      const errors: { name?: string; email?: string; password?: string } = {};
       result.error.errors.forEach((err) => {
+        if (err.path[0] === 'name') errors.name = err.message;
         if (err.path[0] === 'email') errors.email = err.message;
         if (err.path[0] === 'password') errors.password = err.message;
       });
@@ -48,11 +49,11 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await businessApi.login(email, password);
+      const response = await businessApi.signup(name, email, password);
       setStoredAuth(response.token, response.businessId);
-      navigate(from, { replace: true });
+      navigate('/business/setup', { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+      setError(err instanceof Error ? err.message : 'Signup failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -66,14 +67,14 @@ export function LoginPage() {
         transition={{ duration: 0.4 }}
         className="w-full max-w-md"
       >
-        <Card className="border-border/50 shadow-elegant">
+        <Card className="border-border/50 shadow-elevated">
           <CardHeader className="text-center pb-2">
-            <div className="mx-auto mb-4 h-14 w-14 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow">
-              <Building2 className="h-8 w-8 text-white" />
+            <div className="mx-auto mb-4 h-14 w-14 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-floating">
+              <Building2 className="h-8 w-8 text-primary-foreground" />
             </div>
-            <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl font-bold">Create Your Business</CardTitle>
             <CardDescription>
-              Sign in to your Ringlify business dashboard
+              Sign up to get started with Ringlify
             </CardDescription>
           </CardHeader>
 
@@ -89,6 +90,25 @@ export function LoginPage() {
                   {error}
                 </motion.div>
               )}
+
+              <div className="space-y-2">
+                <Label htmlFor="name">Business Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Your Business Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={`pl-10 ${fieldErrors.name ? 'border-destructive' : ''}`}
+                    disabled={isLoading}
+                  />
+                </div>
+                {fieldErrors.name && (
+                  <p className="text-sm text-destructive">{fieldErrors.name}</p>
+                )}
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
@@ -146,20 +166,20 @@ export function LoginPage() {
                 {isLoading ? (
                   <>
                     <LoadingSpinner size="sm" className="mr-2" />
-                    Signing in...
+                    Creating account...
                   </>
                 ) : (
-                  'Sign In'
+                  'Create Business Account'
                 )}
               </Button>
             </form>
 
             <div className="mt-6 pt-6 border-t border-border">
               <p className="text-sm text-muted-foreground text-center">
-                Don't have an account?{' '}
-                <a href="/business/signup" className="text-primary hover:underline font-medium">
-                  Sign up
-                </a>
+                Already have an account?{' '}
+                <Link to="/business/login" className="text-primary hover:underline font-medium">
+                  Sign in
+                </Link>
               </p>
             </div>
           </CardContent>
