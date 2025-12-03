@@ -67,6 +67,13 @@ export interface LoginResponse {
   business: Business;
 }
 
+export interface SignupResponse {
+  id: string;
+  name: string;
+  email: string;
+  token: string;
+}
+
 export interface ApiError {
   error: string;
   message: string;
@@ -136,7 +143,7 @@ class BusinessApiClient {
   }
 
   // Signup
-  async signup(name: string, email: string, password: string): Promise<LoginResponse> {
+  async signup(name: string, email: string, password: string): Promise<SignupResponse> {
     return this.request('/auth/business/signup', {
       method: 'POST',
       body: JSON.stringify({ name, email, password }),

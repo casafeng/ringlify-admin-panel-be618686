@@ -50,7 +50,8 @@ export function SignupPage() {
 
     try {
       const response = await businessApi.signup(name, email, password);
-      setStoredAuth(response.token, response.businessId);
+      // Backend returns { id, name, email, token } - use 'id' as businessId
+      setStoredAuth(response.token, response.id);
       navigate('/business/setup', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Signup failed. Please try again.');
