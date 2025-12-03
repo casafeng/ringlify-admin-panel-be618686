@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import ringlifyLogo from "@/assets/ringlify-logo.png";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -74,7 +75,7 @@ export default function HomePage() {
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <Link to="/" className="flex items-center space-x-2">
-                <Phone className="h-6 w-6 text-primary" />
+                <img src={ringlifyLogo} alt="Ringlify" className="h-7 w-7" />
                 <span className="text-xl font-bold">Ringlify AI</span>
               </Link>
             </div>
@@ -345,7 +346,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="col-span-2 md:col-span-1 space-y-4">
               <Link to="/" className="flex items-center space-x-2">
-                <Phone className="h-6 w-6 text-primary" />
+                <img src={ringlifyLogo} alt="Ringlify" className="h-7 w-7" />
                 <span className="text-xl font-bold">Ringlify AI</span>
               </Link>
               <p className="text-sm text-muted-foreground">
