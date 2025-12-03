@@ -49,7 +49,12 @@ export function LoginPage() {
 
     try {
       const response = await businessApi.login(email, password);
-      setStoredAuth(response.token, response.businessId);
+      // Backend may return businessId or id, also fallback to business.id
+      const businessId = response.businessId || (response as any).id || response.business?.id;
+      if (!businessId) {
+        throw new Error('Login failed: No business ID returned');
+      }
+      setStoredAuth(response.token, businessId);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
